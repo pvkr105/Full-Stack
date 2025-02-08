@@ -73,8 +73,9 @@ const ListEmployeeComponent = () => {
                   Update
                 </button>
                 <button
-                  className="btn btn-danger ml-2"
+                  className="btn btn-danger"
                   onClick={() => removeEmployee(employee.id)}
+                  style={{ marginLeft: "10px" }}
                 >
                   Delete
                 </button>
