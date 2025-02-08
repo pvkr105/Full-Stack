@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { createEmployee, getEmployee } from "../services/EmployeeService";
+import {
+  createEmployee,
+  getEmployee,
+  updateEmployee,
+  deleteEmployee,
+} from "../services/EmployeeService";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EmployeeComponent = () => {
@@ -31,7 +36,7 @@ const EmployeeComponent = () => {
     }
   }, [id]);
 
-  const saveEmployee = (e) => {
+  const saveOrUpdateEmployee = (e) => {
     e.preventDefault();
 
     if (validateForm()) {
@@ -41,11 +46,25 @@ const EmployeeComponent = () => {
         email: email,
       };
       console.log(JSON.stringify(employee));
-
-      createEmployee(employee).then((res) => {
-        console.log(res.data);
-        navigator("/employees");
-      });
+      if (id) {
+        updateEmployee(employee, id)
+          .then((res) => {
+            console.log(res.data);
+            navigator("/employees");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } else {
+        createEmployee(employee)
+          .then((res) => {
+            console.log(res.data);
+            navigator("/employees");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
     }
   };
 
@@ -138,7 +157,10 @@ const EmployeeComponent = () => {
                   <div className="invalid-feedback">{errors.email}</div>
                 )}
               </div>
-              <button className="btn btn-success" onClick={saveEmployee}>
+              <button
+                className="btn btn-success"
+                onClick={saveOrUpdateEmployee}
+              >
                 Submit
               </button>
             </form>
