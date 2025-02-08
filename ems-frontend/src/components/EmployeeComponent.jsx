@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { createEmployee } from "../services/EmployeeService";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { createEmployee, getEmployee } from "../services/EmployeeService";
+import { useNavigate, useParams } from "react-router-dom";
 
 const EmployeeComponent = () => {
   const [firstName, setFirstName] = useState("");
@@ -14,6 +14,22 @@ const EmployeeComponent = () => {
   });
 
   const navigator = useNavigate();
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      getEmployee(id)
+        .then((res) => {
+          const employee = res.data;
+          setFirstName(employee.firstName);
+          setLastName(employee.lastName);
+          setEmail(employee.email);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [id]);
 
   const saveEmployee = (e) => {
     e.preventDefault();
@@ -64,11 +80,19 @@ const EmployeeComponent = () => {
     return valid;
   }
 
+  function pageTitle() {
+    if (id) {
+      return <h3 className="text-center">Update Employee</h3>;
+    } else {
+      return <h3 className="text-center">Add Employee</h3>;
+    }
+  }
+
   return (
     <div className="container">
       <div className="row">
         <div className="card col-md-6 offset-md-3 offset-md-3">
-          <h3 className="text-center">Add Employee</h3>
+          {pageTitle()}
           <div className="card-body">
             <form>
               <div className="form-group mb-2">
